@@ -119,8 +119,8 @@ namespace VedaConnect
                 clientreference = header.ClientReference,
                 operatorid = header.OperatorId,
                 operatorname = header.OperatorName,
-                permissiontypecode = header.PermissionTypeCode,
-                productdatalevelcode = header.ProductDataLevelCode,
+                permissiontypecode = header.PermissionType.ToCode(),
+                productdatalevelcode = header.ProductDataLevel.ToCode(),
                 requestedscores = header.RequestedScores
             };
         }

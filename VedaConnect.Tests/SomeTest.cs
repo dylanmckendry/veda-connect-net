@@ -20,8 +20,8 @@ namespace VedaConnect.Tests
                     ClientReference = "my-ref-101",
                     OperatorId = "101",
                     OperatorName = "John Smith",
-                    PermissionTypeCode = "XY",
-                    ProductDataLevelCode = "N",
+                    PermissionType = PermissionType.ConsumerPlusCommercial,
+                    ProductDataLevel = ProductDataLevel.Negative,
                     RequestedScores = new[] {"VSA_2.0_XY_NR"}
                 },
                 Data = new EnquiryData
