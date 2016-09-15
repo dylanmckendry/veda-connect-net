@@ -23,7 +23,7 @@ namespace VedaConnect
             _client.ClientCredentials.UserName.Password = password;
         }
 
-        public async Task Apply(Enquiry enquiry)
+        public async Task SubmitEnquiryAsync(Enquiry enquiry)
         {
             var header = enquiry.Header;
             var individual = enquiry.Data.Individual;

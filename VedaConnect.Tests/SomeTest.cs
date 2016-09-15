@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using VedaConnect.VedaScoreApply;
 
 namespace VedaConnect.Tests
 {
@@ -61,7 +60,7 @@ namespace VedaConnect.Tests
                     }
                 }
             };
-            await client.Apply(enquiry);
+            await client.SubmitEnquiryAsync(enquiry);
         }
     }
 }
