@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using VedaConnect.VedaScoreApply;
@@ -22,73 +23,47 @@ namespace VedaConnect
             _client.ClientCredentials.UserName.Password = password;
         }
 
-        public async Task Apply()
+        public async Task Apply(Enquiry enquiry)
         {
+            var header = enquiry.Header;
+            var individual = enquiry.Data.Individual;
+            var productEnquiry = enquiry.Data.Enquiry;
+
+            var addresses = Addresses(individual);
             var request = new submitEnquiryRequest(new requestType
             {
-                enquiryheader = new requestTypeEnquiryheader
-                {
-                    clientreference = "my-ref-101",
-                    operatorid = "101",
-                    operatorname = "John Smith",
-                    permissiontypecode = "XY",
-                    productdatalevelcode = "N",
-                    requestedscores = new[] { "VSA_2.0_XY_NR" }
-                },
+                enquiryheader = Enquiryheader(header),
                 enquirydata = new requestTypeEnquirydata
                 {
                     Item = new individualinputType
                     {
                         currentname = new individualnameinputType
                         {
-                            title = "Mr",
-                            firstgivenname = "Samuel",
-                            othergivenname = new[] { "John" },
-                            familyname = "Elks"
+                            title = individual.Title,
+                            firstgivenname = individual.FirstName,
+                            othergivenname = individual.OtherNames,
+                            familyname = individual.FamilyName
                         },
-                        addresses = new[]
-                        {
-                            new addressinputType
-                            {
-                                type = currentPreviousType.C,
-                                Items = new object[]
-                                {
-                                    "9",
-                                    "20",
-                                    "Pacific",
-                                    "ST",
-                                    "Bronte",
-                                    new stateType {Value = AustralianStateType.NSW},
-                                    "2024"
-                                },
-                                ItemsElementName = new[]
-                                {
-                                    ItemsChoiceType.unitnumber,
-                                    ItemsChoiceType.streetnumber,
-                                    ItemsChoiceType.streetname,
-                                    ItemsChoiceType.streettype,
-                                    ItemsChoiceType.suburb,
-                                    ItemsChoiceType.state,
-                                    ItemsChoiceType.postcode,
-                                },
-                                typeSpecified = true
-                            }
-                        },
-                        dateofbirth = new DateTime(1965, 4, 5),
-                        dateofbirthSpecified = true,
+                        addresses = addresses,
+                        dateofbirth = individual.DateOfBirth ?? DateTime.MinValue,
+                        dateofbirthSpecified = individual.DateOfBirth.HasValue,
                         driverslicence = new photoidcardType
                         {
-                            number = "DD8723633"
+                            number = individual.LicenseNumber
                         },
-                        gendercode = gendercodeType.M
+                        gendercode = (gendercodeType)Enum.Parse(typeof(gendercodeType), individual.Gender.ToString()[0].ToString())
                     },
                     enquiry = new enquiryType
                     {
-                        accounttypecode = "PR",
-                        enquiryamount = new MoneyType { currencycode = "AUD", Value = "5000" },
-                        iscreditreview = false,
-                        iscreditreviewSpecified = true,
-                        relationshipcode = "1"
+                        accounttypecode = productEnquiry.AccountTypeCode,
+                        enquiryamount = new MoneyType
+                        {
+                            currencycode = productEnquiry.CurrencyCode,
+                            Value = productEnquiry.EnquiryAmount.ToString(CultureInfo.InvariantCulture)
+                        },
+                        iscreditreview = productEnquiry.IsCreditReview ?? false,
+                        iscreditreviewSpecified = productEnquiry.IsCreditReview.HasValue,
+                        relationshipcode = productEnquiry.RelationshipCode
                     }
                 }
             });
@@ -102,6 +77,54 @@ namespace VedaConnect
             }
         }
 
+        private static addressinputType[] Addresses(Individual individual)
+        {
+            return individual.Addresses.Select(a =>
+                new addressinputType
+                {
+                    type =
+                        (currentPreviousType)Enum.Parse(typeof(currentPreviousType), a.Type.ToString()[0].ToString()),
+                    Items = new object[]
+                    {
+                        a.Unit,
+                        a.StreetNumber,
+                        a.StreetName,
+                        a.StreetType.ToString(),
+                        a.Suburb,
+                        new stateType
+                        {
+                            Value = (AustralianStateType) Enum.Parse(typeof (AustralianStateType), a.State.ToString())
+                        },
+                        a.Postcode
+                    },
+                    ItemsElementName = new[]
+                    {
+                        ItemsChoiceType.unitnumber,
+                        ItemsChoiceType.streetnumber,
+                        ItemsChoiceType.streetname,
+                        ItemsChoiceType.streettype,
+                        ItemsChoiceType.suburb,
+                        ItemsChoiceType.state,
+                        ItemsChoiceType.postcode,
+                    },
+                    typeSpecified = a.Type != null
+                })
+                .ToArray();
+        }
+
+        private static requestTypeEnquiryheader Enquiryheader(EnquiryHeader header)
+        {
+            return new requestTypeEnquiryheader
+            {
+                clientreference = header.ClientReference,
+                operatorid = header.OperatorId,
+                operatorname = header.OperatorName,
+                permissiontypecode = header.PermissionTypeCode,
+                productdatalevelcode = header.ProductDataLevelCode,
+                requestedscores = header.RequestedScores
+            };
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -112,41 +135,6 @@ namespace VedaConnect
             if (!disposing) return;
 
             _client.Close();
-        }
-    }
-
-    public class VedaConnectException : Exception
-    {
-        public VedaError[] Errors { get; private set; }
-
-        public VedaConnectException(string message)
-            : base(message)
-        { }
-
-        public VedaConnectException(string message, Exception innerException)
-            : base(message, innerException)
-        { }
-
-        internal VedaConnectException(string message, errorType[] errors)
-            : base(message)
-        {
-            Errors = errors
-                .Select(e => new VedaError
-                {
-                    FaultCode = e.faultcode,
-                    FaultActor = e.faultactor,
-                    FaultString = e.faultstring,
-                    Detail = e.detail
-                })
-                .ToArray();
-        }
-
-        public class VedaError
-        {
-            public string FaultCode { get; set; }
-            public string FaultActor { get; set; }
-            public string FaultString { get; set; }
-            public string Detail { get; set; }
         }
     }
 }
