@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Configuration;
 using System.Threading.Tasks;
 using VedaConnect.VedaScoreApply;
 
@@ -12,7 +16,17 @@ namespace VedaConnect
 
         public Client(string url, string username, string password)
         {
-            _client = new VedaScoreApplyPortTypeClient("VedaConnectEndpoint", url);
+            var encoding = new TextMessageEncodingBindingElement { MessageVersion = MessageVersion.Soap11WSAddressing10 };
+            var transport = new HttpsTransportBindingElement { AuthenticationScheme = AuthenticationSchemes.Basic, KeepAliveEnabled = true };
+            var security = SecurityBindingElement.CreateUserNameOverTransportBindingElement();
+            security.IncludeTimestamp = false;
+
+            var binding = new CustomBinding();
+            binding.Elements.Add(encoding);
+            binding.Elements.Add(security);
+            binding.Elements.Add(transport);
+
+            _client = new VedaScoreApplyPortTypeClient(binding, new EndpointAddress(url));
 
             if (_client.ClientCredentials == null)
             {
