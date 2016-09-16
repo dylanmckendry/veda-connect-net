@@ -37,7 +37,7 @@ namespace VedaConnect
             _client.ClientCredentials.UserName.Password = password;
         }
 
-        public async Task SubmitEnquiryAsync(Enquiry enquiry)
+        public async Task<response> SubmitEnquiryAsync(Enquiry enquiry)
         {
             var header = enquiry.Header;
             var individual = enquiry.Data.Individual;
@@ -89,6 +89,8 @@ namespace VedaConnect
             {
                 throw new VedaConnectException("Boom!", response.errors);
             }
+
+            return response;
         }
 
         private static addressinputType[] Addresses(Individual individual)
