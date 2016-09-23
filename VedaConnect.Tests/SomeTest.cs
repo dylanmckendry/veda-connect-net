@@ -22,7 +22,7 @@ namespace VedaConnect.Tests
                     OperatorName = "John Smith",
                     PermissionType = PermissionType.ConsumerPlusCommercial,
                     ProductDataLevel = ProductDataLevel.Negative,
-                    RequestedScores = new[] {"VSA_2.0_XY_NR"}
+                    RequestedScores = new[] { "VSA_2.0_XY_NR" }
                 },
                 Data = new EnquiryData
                 {
@@ -30,13 +30,13 @@ namespace VedaConnect.Tests
                     {
                         Title = "Mr",
                         FirstName = "Samuel",
-                        OtherNames = new[] {"John"},
+                        OtherNames = new[] { "John" },
                         FamilyName = "Elks",
                         Addresses = new[]
                         {
                             new Address
                             {
-                                Type = AddressType.Current,
+                                Type = CurrentOrPrevious.Current,
                                 Unit = "9",
                                 StreetNumber = "20",
                                 StreetName = "Pacific",

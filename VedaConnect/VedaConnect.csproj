@@ -44,17 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Address.cs" />
-    <Compile Include="AddressType.cs" />
-    <Compile Include="Enquiry.cs" />
-    <Compile Include="EnquiryData.cs" />
-    <Compile Include="EnquiryHeader.cs" />
+    <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\CurrentOrPrevious.cs" />
+    <Compile Include="Models\Enquiry.cs" />
+    <Compile Include="Models\EnquiryData.cs" />
+    <Compile Include="Models\EnquiryHeader.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="EnquiryType.cs" />
-    <Compile Include="Gender.cs" />
-    <Compile Include="Individual.cs" />
-    <Compile Include="ProductDataLevel.cs" />
-    <Compile Include="PermissionType.cs" />
+    <Compile Include="Models\EnquiryType.cs" />
+    <Compile Include="Models\Gender.cs" />
+    <Compile Include="Models\Individual.cs" />
+    <Compile Include="Models\ProductDataLevel.cs" />
+    <Compile Include="Models\PermissionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -66,8 +66,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="State.cs" />
-    <Compile Include="StreetType.cs" />
+    <Compile Include="Models\State.cs" />
+    <Compile Include="Models\StreetType.cs" />
     <Compile Include="VedaConnectException.cs" />
   </ItemGroup>
   <ItemGroup>

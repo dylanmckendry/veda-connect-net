@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using System.ServiceModel.Configuration;
 using System.Threading.Tasks;
 using VedaConnect.VedaScoreApply;
 
@@ -65,7 +65,7 @@ namespace VedaConnect
                         {
                             number = individual.LicenseNumber
                         },
-                        gendercode = (gendercodeType)Enum.Parse(typeof(gendercodeType), individual.Gender.ToString()[0].ToString())
+                        gendercode = individual.Gender.ToCode()
                     },
                     enquiry = new enquiryType
                     {
@@ -96,36 +96,30 @@ namespace VedaConnect
         private static addressinputType[] Addresses(Individual individual)
         {
             return individual.Addresses.Select(a =>
-                new addressinputType
+            {
+                var items = new Dictionary<ItemsChoiceType, object>
                 {
-                    type =
-                        (currentPreviousType)Enum.Parse(typeof(currentPreviousType), a.Type.ToString()[0].ToString()),
-                    Items = new object[]
-                    {
-                        a.Unit,
-                        a.StreetNumber,
-                        a.StreetName,
-                        a.StreetType.ToString(),
-                        a.Suburb,
-                        new stateType
-                        {
-                            Value = (AustralianStateType) Enum.Parse(typeof (AustralianStateType), a.State.ToString())
-                        },
-                        a.Postcode
-                    },
-                    ItemsElementName = new[]
-                    {
-                        ItemsChoiceType.unitnumber,
-                        ItemsChoiceType.streetnumber,
-                        ItemsChoiceType.streetname,
-                        ItemsChoiceType.streettype,
-                        ItemsChoiceType.suburb,
-                        ItemsChoiceType.state,
-                        ItemsChoiceType.postcode,
-                    },
-                    typeSpecified = a.Type != null
-                })
-                .ToArray();
+                    {ItemsChoiceType.property, a.Property},
+                    {ItemsChoiceType.unitnumber, a.Unit},
+                    {ItemsChoiceType.streetnumber, a.StreetNumber},
+                    {ItemsChoiceType.streetname, a.StreetName},
+                    {ItemsChoiceType.streettype, a.StreetType.ToString()},
+                    {ItemsChoiceType.suburb, a.Suburb},
+                    {ItemsChoiceType.state,a.State == null ? null : new stateType {Value = a.State.Value.ToAustralianStateType()}},
+                    {ItemsChoiceType.postcode, a.Postcode},
+                    {ItemsChoiceType.countrycode, a.CountryCode}
+                }
+                    .Where(k => k.Value != null)
+                    .ToDictionary(k => k.Key, k => k.Value);
+                var result = new addressinputType
+                {
+                    type = a.Type?.ToCurrentPreviousType() ?? currentPreviousType.C,
+                    typeSpecified = a.Type != null,
+                    Items = items.Values.ToArray(),
+                    ItemsElementName = items.Keys.ToArray()
+                };
+                return result;
+            }).ToArray();
         }
 
         private static requestTypeEnquiryheader Enquiryheader(EnquiryHeader header)
