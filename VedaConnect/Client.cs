@@ -83,14 +83,8 @@ namespace VedaConnect
             });
 
             var sumbitEnquiryResponse = await _client.submitEnquiryAsync(request);
-
-            var response = sumbitEnquiryResponse.response;
-            if (response.responsetype == responseResponsetype.error)
-            {
-                throw new VedaConnectException("Boom!", response.errors);
-            }
-
-            return response;
+            
+            return sumbitEnquiryResponse.response;
         }
 
         private static addressinputType[] Addresses(Individual individual)
