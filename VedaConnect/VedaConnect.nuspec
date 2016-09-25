@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>ducas</authors>
+    <owners>ducas</owners>
+    <projectUrl>https://github.com/ducas/veda-connect-net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Client for communicating with the VedaConnect SOAP service to perform VedaScore Apply enquiries.</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Veda VedaConnect VedaScore</tags>
+  </metadata>
+</package>

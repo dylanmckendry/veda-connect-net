@@ -89,6 +89,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\VedaScoreApply\vedascore-apply-v2-0-5.wsdl" />
+    <None Include="VedaConnect.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\VedaScoreApply\" />
