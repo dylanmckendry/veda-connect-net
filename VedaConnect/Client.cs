@@ -17,7 +17,7 @@ namespace VedaConnect
         public Client(string url, string username, string password)
         {
             var encoding = new TextMessageEncodingBindingElement { MessageVersion = MessageVersion.Soap11WSAddressing10 };
-            var transport = new HttpsTransportBindingElement { AuthenticationScheme = AuthenticationSchemes.Basic, KeepAliveEnabled = true };
+            var transport = new HttpsTransportBindingElement { AuthenticationScheme = AuthenticationSchemes.Basic, KeepAliveEnabled = true, MaxReceivedMessageSize = long.MaxValue };
             var security = SecurityBindingElement.CreateUserNameOverTransportBindingElement();
             security.IncludeTimestamp = false;
 
@@ -83,7 +83,7 @@ namespace VedaConnect
             });
 
             var sumbitEnquiryResponse = await _client.submitEnquiryAsync(request);
-            
+
             return sumbitEnquiryResponse.response;
         }
 
