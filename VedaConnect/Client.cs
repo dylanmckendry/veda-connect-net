@@ -13,6 +13,7 @@ namespace VedaConnect
     public class Client : IDisposable
     {
         private readonly VedaScoreApplyPortTypeClient _client;
+        private readonly MessageInspector _messageInspector;
 
         public Client(string url, string username, string password)
         {
@@ -26,7 +27,11 @@ namespace VedaConnect
             binding.Elements.Add(security);
             binding.Elements.Add(transport);
 
-            _client = new VedaScoreApplyPortTypeClient(binding, new EndpointAddress(url));
+            var endpointAddress = new EndpointAddress(url);
+
+            _messageInspector = new MessageInspector();
+            _client = new VedaScoreApplyPortTypeClient(binding, endpointAddress);
+            _client.Endpoint.Behaviors.Add(_messageInspector);
 
             if (_client.ClientCredentials == null)
             {
@@ -37,7 +42,7 @@ namespace VedaConnect
             _client.ClientCredentials.UserName.Password = password;
         }
 
-        public async Task<response> SubmitEnquiryAsync(Enquiry enquiry)
+        public async Task<SubmitEnquiryResult> SubmitEnquiryAsync(Enquiry enquiry)
         {
             var header = enquiry.Header;
             var individual = enquiry.Data.Individual;
@@ -82,9 +87,26 @@ namespace VedaConnect
                 }
             });
 
-            var sumbitEnquiryResponse = await _client.submitEnquiryAsync(request);
+            var messages = new List<Message>();
+            EventHandler<MessageReceivedEventArgs> messageReceived = (o, args) => messages.Add(args.Message);
 
-            return sumbitEnquiryResponse.response;
+            MessageInspector.MessageReceived += messageReceived;
+            var sumbitEnquiryResponse = await _client.submitEnquiryAsync(request);
+            await Task.Delay(3000);
+            MessageInspector.MessageReceived -= messageReceived;
+
+            var response = sumbitEnquiryResponse?.response;
+            var messageId = response?.productheader?.enquiryid;
+            var message = messages.FirstOrDefault(m => m.Headers.Id == messageId);
+
+            var result = new SubmitEnquiryResult
+            {
+                Response = response,
+                Headers = message?.Headers,
+                Content = message?.Content
+            };
+
+            return result;
         }
 
         private static addressinputType[] Addresses(Individual individual)
