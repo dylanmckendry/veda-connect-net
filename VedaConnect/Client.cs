@@ -10,7 +10,12 @@ using VedaConnect.VedaScoreApply;
 
 namespace VedaConnect
 {
-    public class Client : IDisposable
+    public interface IClient : IDisposable
+    {
+        Task<SubmitEnquiryResult> SubmitEnquiryAsync(Enquiry enquiry);
+    }
+
+    public class Client : IClient
     {
         private readonly VedaScoreApplyPortTypeClient _client;
         private readonly MessageInspector _messageInspector;
