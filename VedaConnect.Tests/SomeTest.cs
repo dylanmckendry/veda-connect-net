@@ -10,9 +10,9 @@ namespace VedaConnect.Tests
         [Test]
         public async Task ApplyTwice()
         {
-            var client = new Client(
                 "https://cteau.vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "TEST_USER", "TEST_PASSWORD" //TEST
                 // "https://vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "PROD_USER", "PROD_PASSWORD"  //PROD
+            var client = new VedaScoreApplyClient(
                 );
             var task1 = SubmitEnquiryResult(client);
             var task2 = SubmitEnquiryResult(client);
@@ -29,9 +29,9 @@ namespace VedaConnect.Tests
         [Test]
         public async Task Apply()
         {
-            var client = new Client(
                 "https://cteau.vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "TEST_USER", "TEST_PASSWORD" //TEST
                 // "https://vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "PROD_USER", "PROD_PASSWORD"  //PROD
+            var client = new VedaScoreApplyClient(
                 );
             var result = await SubmitEnquiryResult(client);
 
@@ -47,7 +47,7 @@ namespace VedaConnect.Tests
             result.Headers.Id.Should().Be(result.Response.productheader.enquiryid);
         }
 
-        private static async Task<SubmitEnquiryResult> SubmitEnquiryResult(Client client)
+        private static async Task<SubmitEnquiryResult> SubmitEnquiryResult(VedaScoreApplyClient vedaScoreApplyClient)
         {
             var enquiry = new Enquiry
             {
@@ -58,7 +58,7 @@ namespace VedaConnect.Tests
                     OperatorName = "John Smith",
                     PermissionType = PermissionType.ConsumerPlusCommercial,
                     ProductDataLevel = ProductDataLevel.Negative,
-                    RequestedScores = new[] {"VSA_2.0_XY_NR"}
+                    RequestedScores = new[] { "VSA_2.0_XY_NR" }
                 },
                 Data = new EnquiryData
                 {
@@ -66,7 +66,7 @@ namespace VedaConnect.Tests
                     {
                         Title = "Mr",
                         FirstName = "Samuel",
-                        OtherNames = new[] {"John"},
+                        OtherNames = new[] { "John" },
                         FamilyName = "Elks",
                         Addresses = new[]
                         {
@@ -96,7 +96,7 @@ namespace VedaConnect.Tests
                     }
                 }
             };
-            var result = await client.SubmitEnquiryAsync(enquiry);
+            var result = await vedaScoreApplyClient.SubmitEnquiryAsync(enquiry);
             return result;
         }
     }

@@ -10,17 +10,17 @@ using VedaConnect.VedaScoreApply;
 
 namespace VedaConnect
 {
-    public interface IClient : IDisposable
+    public interface IVedaScoreApplyClient : IDisposable
     {
         Task<SubmitEnquiryResult> SubmitEnquiryAsync(Enquiry enquiry);
     }
 
-    public class Client : IClient
+    public class VedaScoreApplyClient : IVedaScoreApplyClient
     {
         private readonly VedaScoreApplyPortTypeClient _client;
         private readonly MessageInspector _messageInspector;
 
-        public Client(string url, string username, string password)
+        public VedaScoreApplyClient(string url, string username, string password)
         {
             var encoding = new TextMessageEncodingBindingElement { MessageVersion = MessageVersion.Soap11WSAddressing10 };
             var transport = new HttpsTransportBindingElement { AuthenticationScheme = AuthenticationSchemes.Basic, KeepAliveEnabled = true, MaxReceivedMessageSize = int.MaxValue };
