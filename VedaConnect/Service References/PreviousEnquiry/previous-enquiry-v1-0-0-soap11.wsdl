@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://vedaxml.com/vxml2/previous-enquiry-v1-0.xsd" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:ns="http://vedaxml.com/vxml2/previous-enquiry-v1.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://vedaxml.com/vxml2/previous-enquiry-v1.wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema targetNamespace="http://www.w3.org/2005/05/xmlmime">
+      <xs:attribute name="contentType">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="3" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="expectedContentTypes" type="xs:string" />
+      <xs:complexType name="base64Binary">
+        <xs:simpleContent>
+          <xs:extension base="xs:base64Binary">
+            <xs:attribute ref="xmime:contentType" />
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+      <xs:complexType name="hexBinary">
+        <xs:simpleContent>
+          <xs:extension base="xs:hexBinary">
+            <xs:attribute ref="xmime:contentType" />
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:pe="http://vedaxml.com/vxml2/previous-enquiry-v1-0.xsd" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://vedaxml.com/vxml2/previous-enquiry-v1-0.xsd">
+      <xs:import namespace="http://www.w3.org/2005/05/xmlmime" />
+      <xs:complexType name="previousEnquiryRequestType">
+        <xs:annotation>
+          <xs:documentation>ComplexType for requesting details about a previous enquiry message referenced by the enquiry-id</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element name="enquiryId">
+            <xs:annotation>
+              <xs:documentation>enquiryId of the previous enquiry report to retrieve</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element maxOccurs="unbounded" name="contentType" type="xs:token">
+            <xs:annotation>
+              <xs:documentation>internet media type the report data should be returned in</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="previousEnquiryResponseType">
+        <xs:sequence>
+          <xs:element name="enquiryId" type="xs:token">
+            <xs:annotation>
+              <xs:documentation>enquiryId of the report data being returned</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="enquiryTime" type="xs:dateTime">
+            <xs:annotation>
+              <xs:documentation>Timestamp of when the original report was processed</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="binaryData">
+            <xs:annotation>
+              <xs:documentation>Binary representation of the report encoded in base64</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:restriction base="xmime:base64Binary">
+                  <xs:attribute ref="xmime:contentType" use="required" />
+                </xs:restriction>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="xmlData" type="xs:anyType">
+            <xs:annotation>
+              <xs:documentation>XML representation of the report</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="request" type="pe:previousEnquiryRequestType">
+        <xs:annotation>
+          <xs:documentation>Message element to request a representation of a previous enquiry referenced by the enquiryId</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="response" type="pe:previousEnquiryResponseType">
+        <xs:annotation>
+          <xs:documentation>Message element returning previous enquiry report data</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="previousEnquiryMessageRequest">
+    <wsdl:part name="request" element="tns:request" />
+  </wsdl:message>
+  <wsdl:message name="previousEnquiryMessageResponse">
+    <wsdl:part name="response" element="tns:response" />
+  </wsdl:message>
+  <wsdl:portType name="previousEnquiryPortType">
+    <wsdl:operation name="previousEnquiryOperation">
+      <wsdl:input wsaw:Action="http://vedaxml.com/previousEnquiry/ServiceRequest" message="ns:previousEnquiryMessageRequest" />
+      <wsdl:output wsaw:Action="http://vedaxml.com/previousEnquiry/ServiceResult" message="ns:previousEnquiryMessageResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="previousEnquirySOAP11Binding" type="ns:previousEnquiryPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsaw:UsingAddressing wsdl:required="true" />
+    <wsdl:operation name="previousEnquiryOperation">
+      <soap:operation soapAction="http://vedaxml.com/previousEnquiry/ServiceRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="product-name">
+    <wsdl:port name="previousEnquirySOAP11Port" binding="ns:previousEnquirySOAP11Binding">
+      <soap:address location="https://vedaxml.com/sys2/previous-enquiry-v1" />
+    </wsdl:port>
+    <wsdl:port name="previousEnquirySOAP11Port-CTA" binding="ns:previousEnquirySOAP11Binding">
+      <soap:address location="https://ctaau.vedaxml.com/cta/sys2/previous-enquiry-v1" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
