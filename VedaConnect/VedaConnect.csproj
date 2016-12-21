@@ -51,6 +51,9 @@
     <Compile Include="Models\Enquiry.cs" />
     <Compile Include="Models\EnquiryData.cs" />
     <Compile Include="Models\EnquiryHeader.cs" />
+    <Compile Include="Models\PreviousEnquiryContentType.cs" />
+    <Compile Include="Models\PreviousEnquiryResult.cs" />
+    <Compile Include="PreviousEnquiryClient.cs" />
     <Compile Include="Service References\PreviousEnquiry\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
