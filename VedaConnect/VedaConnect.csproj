@@ -44,13 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientFactory.cs" />
     <Compile Include="MessageInspector.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\CurrentOrPrevious.cs" />
     <Compile Include="Models\Enquiry.cs" />
     <Compile Include="Models\EnquiryData.cs" />
     <Compile Include="Models\EnquiryHeader.cs" />
-    <Compile Include="Client.cs" />
+    <Compile Include="Models\PreviousEnquiryContentType.cs" />
+    <Compile Include="Models\PreviousEnquiryResult.cs" />
+    <Compile Include="PreviousEnquiryClient.cs" />
+    <Compile Include="Service References\PreviousEnquiry\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="VedaScoreApplyClient.cs" />
     <Compile Include="Models\EnquiryType.cs" />
     <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\Individual.cs" />
@@ -83,6 +92,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Service References\PreviousEnquiry\previous-enquiry-v1-0-0-soap11.wsdl" />
+    <None Include="Service References\PreviousEnquiry\VedaConnect.PreviousEnquiry.previousEnquiryOperationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PreviousEnquiry\VedaConnect.PreviousEnquiry.previousEnquiryResponseType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\VedaScoreApply\VedaConnect.VedaScoreApply.retrieveEnquiryByIDResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -96,6 +112,7 @@
     <None Include="VedaConnect.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\PreviousEnquiry\" />
     <WCFMetadataStorage Include="Service References\VedaScoreApply\" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +123,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\VedaScoreApply\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PreviousEnquiry\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PreviousEnquiry\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PreviousEnquiry\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

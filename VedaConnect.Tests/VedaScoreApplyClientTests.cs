@@ -5,17 +5,17 @@ using NUnit.Framework;
 
 namespace VedaConnect.Tests
 {
-    public class SomeTest
+    public class VedaScoreApplyClientTests
     {
         [Test]
         public async Task ApplyTwice()
         {
-            var client = new Client(
+            var client = new VedaScoreApplyClient(
                 "https://cteau.vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "TEST_USER", "TEST_PASSWORD" //TEST
                 // "https://vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "PROD_USER", "PROD_PASSWORD"  //PROD
                 );
-            var task1 = SubmitEnquiryResult(client);
-            var task2 = SubmitEnquiryResult(client);
+            var task1 = GetResult(client);
+            var task2 = GetResult(client);
 
             await Task.WhenAll(task1, task2);
 
@@ -27,15 +27,22 @@ namespace VedaConnect.Tests
         }
 
         [Test]
-        public async Task Apply()
+        public Task Appy()
         {
-            var client = new Client(
+            return SubmitEnquiryAsync();
+        }
+
+        public async Task<SubmitEnquiryResult> SubmitEnquiryAsync()
+        {
+            var client = new VedaScoreApplyClient(
                 "https://cteau.vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "TEST_USER", "TEST_PASSWORD" //TEST
                 // "https://vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "PROD_USER", "PROD_PASSWORD"  //PROD
                 );
-            var result = await SubmitEnquiryResult(client);
+            var result = await GetResult(client);
 
             Assert(result);
+
+            return result;
         }
 
         private static void Assert(SubmitEnquiryResult result)
@@ -47,7 +54,7 @@ namespace VedaConnect.Tests
             result.Headers.Id.Should().Be(result.Response.productheader.enquiryid);
         }
 
-        private static async Task<SubmitEnquiryResult> SubmitEnquiryResult(Client client)
+        private static async Task<SubmitEnquiryResult> GetResult(VedaScoreApplyClient vedaScoreApplyClient)
         {
             var enquiry = new Enquiry
             {
@@ -58,7 +65,7 @@ namespace VedaConnect.Tests
                     OperatorName = "John Smith",
                     PermissionType = PermissionType.ConsumerPlusCommercial,
                     ProductDataLevel = ProductDataLevel.Negative,
-                    RequestedScores = new[] {"VSA_2.0_XY_NR"}
+                    RequestedScores = new[] { "VSA_2.0_XY_NR" }
                 },
                 Data = new EnquiryData
                 {
@@ -66,7 +73,7 @@ namespace VedaConnect.Tests
                     {
                         Title = "Mr",
                         FirstName = "Samuel",
-                        OtherNames = new[] {"John"},
+                        OtherNames = new[] { "John" },
                         FamilyName = "Elks",
                         Addresses = new[]
                         {
@@ -96,7 +103,7 @@ namespace VedaConnect.Tests
                     }
                 }
             };
-            var result = await client.SubmitEnquiryAsync(enquiry);
+            var result = await vedaScoreApplyClient.SubmitEnquiryAsync(enquiry);
             return result;
         }
     }

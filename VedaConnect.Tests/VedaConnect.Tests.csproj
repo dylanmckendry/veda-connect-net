@@ -60,7 +60,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="SomeTest.cs" />
+    <Compile Include="PreviousEnquiryClientTests.cs" />
+    <Compile Include="VedaScoreApplyClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
