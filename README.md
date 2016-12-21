@@ -16,6 +16,6 @@ VedaConnect .NET SDK is a C# binding for the VedaScore Apply API.
 
    ```code
     var reportClient = new PreviousEnquiryClient("https://cteau.vedaxml.com/sys2/soap11/vedascore-apply-v2-0", "TEST_USER", "TEST_PASSWORD");
-    var reportResult = await reportClient.SubmitEnquiryAsync(new Enquiry { /* Enquiry data */ });
+    var reportResult = await reportClient.GetPreviousEnquiryAsync(enquiryResult.Headers.Id, PreviousEnquiryContentType.Pdf);
     // Save reportResult.Bytes to a PDF file...
     ```
