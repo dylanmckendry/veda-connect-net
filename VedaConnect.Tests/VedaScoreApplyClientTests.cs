@@ -89,6 +89,15 @@ namespace VedaConnect.Tests
                                 Postcode = "2024"
                             }
                         },
+                        Employers = new []
+                        {
+                            new Employer
+                            {
+                                Name = "Veda Corp",
+                                IsSelfEmployed = false,
+                                Type = CurrentOrPrevious.Current,
+                            }
+                        },
                         DateOfBirth = new DateTime(1965, 4, 5),
                         LicenseNumber = "DD8723633",
                         Gender = Gender.Male

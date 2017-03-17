@@ -16,5 +16,7 @@ namespace VedaConnect
         public string LicenseNumber { get; set; }
 
         public Address[] Addresses { get; set; }
+
+        public Employer[] Employers{ get; set; }
     }
 }

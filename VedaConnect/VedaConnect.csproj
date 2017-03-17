@@ -48,6 +48,7 @@
     <Compile Include="MessageInspector.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\CurrentOrPrevious.cs" />
+    <Compile Include="Models\Employer.cs" />
     <Compile Include="Models\Enquiry.cs" />
     <Compile Include="Models\EnquiryData.cs" />
     <Compile Include="Models\EnquiryHeader.cs" />

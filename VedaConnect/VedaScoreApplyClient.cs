@@ -28,6 +28,7 @@ namespace VedaConnect
             var productEnquiry = enquiry.Data.Enquiry;
 
             var addresses = Addresses(individual);
+            var employment = Employment(individual);
             var request = new submitEnquiryRequest(new requestType
             {
                 enquiryheader = Enquiryheader(header),
@@ -43,6 +44,7 @@ namespace VedaConnect
                             familyname = individual.FamilyName
                         },
                         addresses = addresses,
+                        employment = employment,
                         dateofbirth = individual.DateOfBirth ?? DateTime.MinValue,
                         dateofbirthSpecified = individual.DateOfBirth.HasValue,
                         driverslicence = new photoidcardType
@@ -86,6 +88,26 @@ namespace VedaConnect
             };
 
             return result;
+        }
+
+        private employerinputType[] Employment(Individual individual)
+        {
+            return individual.Employers?.Select(e =>
+            {
+                countryCodeEnumType countryCode;
+                if (!Enum.TryParse(e.CountryCode, true, out countryCode)) countryCode = countryCodeEnumType.AUS;
+                return new employerinputType
+                {
+                    name = e.Name,
+                    occupation = e.Occupation,
+                    type = e.Type?.ToCurrentPreviousType() ?? currentPreviousType.C,
+                    isselfemployed = e.IsSelfEmployed ?? false,
+                    isselfemployedSpecified = e.IsSelfEmployed.HasValue,
+                    ABN = e.Abn,
+                    countrycode = new countryType { Value = countryCode },
+                    organisationnumber = e.OrganisationNumber
+                };
+            }).ToArray();
         }
 
         private static addressinputType[] Addresses(Individual individual)
