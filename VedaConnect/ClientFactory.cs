@@ -11,6 +11,8 @@ namespace VedaConnect
             where TClient : ClientBase<TPort>
             where TPort : class
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
             var encoding = new TextMessageEncodingBindingElement { MessageVersion = MessageVersion.Soap11WSAddressing10 };
             var transport = new HttpsTransportBindingElement
             {
